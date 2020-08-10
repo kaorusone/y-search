@@ -30,6 +30,7 @@
           
           <v-list-item-content>
             <v-list-item-title v-text="item.snippet.title"></v-list-item-title>
+            <div v-if="rates[i]">{{rates[i].data.items[0].statistics.likeCount}}</div>
             <v-img :src="item.snippet.thumbnails.default.url"></v-img>
           </v-list-item-content>
         </v-list-item>
@@ -119,18 +120,21 @@ export default {
   data: () => ({
       model: 'I\'m a text field',
       items: [],
-      item: 0
+      item: 0,
+      rates: [],
     }),
   methods: {
     greet: async function (event) {
       axios.get(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyB8WpIBgH2_E3zwmZrJMGq0Dc8DYrCrOqM&part=snippet&q=${this.model}&maxResults=50`)
-    .then((result) => {
+    .then(async(result) => {
+      console.log(this.getrate("Aitf41ghqDo"))
       console.log('result:', result)
       this.items=result.data.items
-      this.items.forEach((item)=>{
-        this.getrate(item.id.videoId)
-
-      })
+      this.rates=
+      await Promise.all(
+      this.items.map(async(item)=>{
+        return await this.getrate(item.id.videoId)//statisticsの情報が返ってくる
+      }))
     })
     .catch((err) => {
       console.warn('Error', err)
@@ -138,14 +142,8 @@ export default {
     },
     getrate: async function (id) {
       console.log(id)
-      axios.get(`https://www.googleapis.com/youtube/v3/videos/getRating?key=AIzaSyB8WpIBgH2_E3zwmZrJMGq0Dc8DYrCrOqM&id=${id}`)
-    .then((result) => {
-      console.log('result:', result)
-
-    })
-    .catch((err) => {
-      console.warn('Error', err)
-    })
+      return await axios.get(`https://www.googleapis.com/youtube/v3/videos?key=AIzaSyB8WpIBgH2_E3zwmZrJMGq0Dc8DYrCrOqM&part=statistics&id=${id}`)
+   
     }
   },
 }
