@@ -19,7 +19,7 @@
           ></v-text-field>
           <div>{{ model }}</div> 
           <v-btn @click="greet">kensaku</v-btn>
-          <v-btn>kensaku2</v-btn>
+          
 <v-list>
       <v-subheader>REPORTS</v-subheader>
       <v-list-item-group v-model="item" color="primary">
@@ -123,10 +123,25 @@ export default {
     }),
   methods: {
     greet: async function (event) {
-      axios.get('https://www.googleapis.com/youtube/v3/playlistItems?key=AIzaSyB8WpIBgH2_E3zwmZrJMGq0Dc8DYrCrOqM&part=snippet&playlistId=RDQM8XE7hbOaYyg')
+      axios.get(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyB8WpIBgH2_E3zwmZrJMGq0Dc8DYrCrOqM&part=snippet&q=${this.model}&maxResults=50`)
     .then((result) => {
       console.log('result:', result)
       this.items=result.data.items
+      this.items.forEach((item)=>{
+        this.getrate(item.id.videoId)
+
+      })
+    })
+    .catch((err) => {
+      console.warn('Error', err)
+    })
+    },
+    getrate: async function (id) {
+      console.log(id)
+      axios.get(`https://www.googleapis.com/youtube/v3/videos/getRating?key=AIzaSyB8WpIBgH2_E3zwmZrJMGq0Dc8DYrCrOqM&id=${id}`)
+    .then((result) => {
+      console.log('result:', result)
+
     })
     .catch((err) => {
       console.warn('Error', err)
