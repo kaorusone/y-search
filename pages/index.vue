@@ -125,7 +125,7 @@ export default {
     }),
   methods: {
     greet: async function (event) {
-      axios.get(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyB8WpIBgH2_E3zwmZrJMGq0Dc8DYrCrOqM&part=snippet&q=${this.model}&maxResults=50`)
+      axios.get(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyB8WpIBgH2_E3zwmZrJMGq0Dc8DYrCrOqM&part=snippet&q=${this.model}&type=video&maxResults=50`)
     .then(async(result) => {
       console.log(this.getrate("Aitf41ghqDo"))
       console.log('result:', result)
