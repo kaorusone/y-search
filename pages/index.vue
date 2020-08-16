@@ -18,7 +18,7 @@
             v-model="model"
           ></v-text-field>
           <div>{{ model }}</div> 
-          <v-btn @click="greet">kensaku</v-btn>
+          <v-btn @click="greet">search</v-btn>
           
 <v-list>
       <v-subheader>REPORTS</v-subheader>
@@ -126,7 +126,8 @@ export default {
     }),
   methods: {
     greet: async function (event) {
-      axios.get(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyB8WpIBgH2_E3zwmZrJMGq0Dc8DYrCrOqM&part=snippet&q=${this.model}&type=video&maxResults=50`)
+      //axios.get(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyB8WpIBgH2_E3zwmZrJMGq0Dc8DYrCrOqM&part=snippet&q=${this.model}&type=video&maxResults=50`)
+      axios.get(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyAAjY2RHYpFNXjTiXdEsxDky2_wu5T40Fk&part=snippet&q=${this.model}&type=video&maxResults=50`)//島ちゃんからもらったapiキー
     .then(async(result) => {
       this.items=result.data.items
       console.log(this.items)
@@ -159,8 +160,9 @@ export default {
     },
     getrate: async function (id) {
       console.log(id)
-      return await axios.get(`https://www.googleapis.com/youtube/v3/videos?key=AIzaSyB8WpIBgH2_E3zwmZrJMGq0Dc8DYrCrOqM&part=statistics&id=${id}`)
-   
+      //return await axios.get(`https://www.googleapis.com/youtube/v3/videos?key=AIzaSyB8WpIBgH2_E3zwmZrJMGq0Dc8DYrCrOqM&part=statistics&id=${id}`)
+      return await axios.get(`https://www.googleapis.com/youtube/v3/videos?key=AIzaSyAAjY2RHYpFNXjTiXdEsxDky2_wu5T40Fk&part=statistics&id=${id}`)//島ちゃんからもらったapiキー
+      
     },
     calculate: function(like, dislike){//得点計算
       let result = (Number(like)/(Number(like)+Number(dislike)))-1/(2*Math.sqrt(Number(like)+Number(dislike)))
