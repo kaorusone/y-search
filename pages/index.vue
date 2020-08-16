@@ -30,8 +30,8 @@
           
           <v-list-item-content>
             <v-list-item-title v-text="item.snippet.title"></v-list-item-title>
-            <div v-if="rates[i]">{{rates[i].data.items[0].statistics.likeCount}}</div>
-            <div v-if="rates[i]">{{calculate(rates[i].data.items[0].statistics.likeCount, rates[i].data.items[0].statistics.dislikeCount)}}</div>
+            <div v-if="rates[i]">{{item.data.items[0].statistics.likeCount}}</div>
+            <div v-if="rates[i]">{{calculate(item.data.items[0].statistics.likeCount, item.data.items[0].statistics.dislikeCount)}}</div>
             <v-img :src="item.snippet.thumbnails.default.url"></v-img>
           </v-list-item-content>
         </v-list-item>
@@ -135,6 +135,23 @@ export default {
       this.items.map(async(item)=>{
         return await this.getrate(item.id.videoId)//statisticsの情報が返ってくる
       }))
+      console.log(this.rates)
+      this.items.map(async(item, i)=>{
+
+        Object.assign(item, this.rates[i])
+      })
+      console.log(this.items)
+      console.log("こんにちは")
+      this.items.sort((a,b) =>{//ソート処理
+        if(
+          this.calculate(a.data.items[0].statistics.likeCount, a.data.items[0].statistics.dislikeCount)<
+          this.calculate(b.data.items[0].statistics.likeCount, b.data.items[0].statistics.dislikeCount)
+        ){
+          return 1
+        }else{
+          return -1
+        }
+      })
     })
     .catch((err) => {
       console.warn('Error', err)
@@ -145,7 +162,7 @@ export default {
       return await axios.get(`https://www.googleapis.com/youtube/v3/videos?key=AIzaSyB8WpIBgH2_E3zwmZrJMGq0Dc8DYrCrOqM&part=statistics&id=${id}`)
    
     },
-    calculate: function(like, dislike){
+    calculate: function(like, dislike){//得点計算
       let result = (Number(like)/(Number(like)+Number(dislike)))-1/(2*Math.sqrt(Number(like)+Number(dislike)))
       result = Math.round(result*10000)/100
       return result
