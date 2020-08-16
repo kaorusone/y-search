@@ -31,6 +31,7 @@
           <v-list-item-content>
             <v-list-item-title v-text="item.snippet.title"></v-list-item-title>
             <div v-if="rates[i]">{{rates[i].data.items[0].statistics.likeCount}}</div>
+            <div v-if="rates[i]">{{calculate(rates[i].data.items[0].statistics.likeCount, rates[i].data.items[0].statistics.dislikeCount)}}</div>
             <v-img :src="item.snippet.thumbnails.default.url"></v-img>
           </v-list-item-content>
         </v-list-item>
@@ -127,9 +128,8 @@ export default {
     greet: async function (event) {
       axios.get(`https://www.googleapis.com/youtube/v3/search?key=AIzaSyB8WpIBgH2_E3zwmZrJMGq0Dc8DYrCrOqM&part=snippet&q=${this.model}&type=video&maxResults=50`)
     .then(async(result) => {
-      console.log(this.getrate("Aitf41ghqDo"))
-      console.log('result:', result)
       this.items=result.data.items
+      console.log(this.items)
       this.rates=
       await Promise.all(
       this.items.map(async(item)=>{
@@ -144,7 +144,12 @@ export default {
       console.log(id)
       return await axios.get(`https://www.googleapis.com/youtube/v3/videos?key=AIzaSyB8WpIBgH2_E3zwmZrJMGq0Dc8DYrCrOqM&part=statistics&id=${id}`)
    
-    }
+    },
+    calculate: function(like, dislike){
+      let result = (Number(like)/(Number(like)+Number(dislike)))-1/(2*Math.sqrt(Number(like)+Number(dislike)))
+      result = Math.round(result*10000)/100
+      return result
+    } 
   },
 }
 </script>
